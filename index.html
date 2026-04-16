@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Media Manager</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #24292f; background: #fff; }
+
+    .container { max-width: 600px; margin: 0 auto; padding: 3rem 1.5rem; }
+
+    .header { display: flex; align-items: center; gap: 1rem; }
+    .header img { width: 56px; height: 56px; border-radius: 12px; }
+    .header-text { display: flex; flex-direction: column; }
+    h1 { font-size: 1.4rem; font-weight: 700; }
+    .tagline { color: #656d76; margin-top: 0.25rem; font-size: 0.95rem; }
+    .version { display: inline-block; margin-top: 0.75rem; font-size: 0.8rem; font-weight: 600; color: #0969da; background: #ddf4ff; padding: 0.2rem 0.6rem; border-radius: 999px; }
+
+    /* Steps */
+    .steps { margin-top: 2rem; }
+    .steps h2 { font-size: 1rem; font-weight: 600; margin-bottom: 0.75rem; }
+    .steps ol { list-style: none; counter-reset: step; padding: 0; }
+    .steps li { counter-increment: step; margin-bottom: 1rem; padding-left: 2rem; position: relative; font-size: 0.9rem; line-height: 1.6; }
+    .steps li::before { content: counter(step); position: absolute; left: 0; top: 0; width: 1.4rem; height: 1.4rem; background: #0969da; color: #fff; border-radius: 50%; font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+    .steps a { color: #0969da; text-decoration: none; font-weight: 500; }
+    .steps a:hover { text-decoration: underline; }
+    .steps code { background: #f6f8fa; border: 1px solid #d0d7de; padding: 2px 6px; border-radius: 4px; font-size: 0.82rem; }
+
+    /* Sections */
+    hr { border: none; border-top: 1px solid #d0d7de; margin: 2rem 0; }
+    h2 { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; }
+
+    .devices ul { list-style: disc; padding-left: 1.25rem; margin-top: 0.25rem; font-size: 0.9rem; line-height: 1.6; }
+
+    .changelog { font-size: 0.88rem; line-height: 1.6; }
+    .changelog h2 ~ h2 { margin-top: 2rem; border-top: 1px solid #d0d7de; padding-top: 1.5rem; }
+    .changelog h3 { font-size: 0.95rem; margin: 1rem 0 0.25rem; }
+    .changelog h4 { font-size: 0.88rem; margin: 0.75rem 0 0.15rem; color: #656d76; }
+    .changelog ul { list-style: disc; padding-left: 1.25rem; margin: 0.15rem 0; }
+    .changelog li { margin: 0.1rem 0; }
+
+    .changelog .screenshots { display: flex; flex-direction: column; gap: 0.75rem; margin: 1rem 0 1.5rem; }
+    .changelog .screenshots img { width: 100%; border-radius: 8px; border: 1px solid #d0d7de; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+
+    .footer { margin-top: 2.5rem; font-size: 0.78rem; color: #8b949e; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <img src="data:image/png;base64,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" alt="Media Manager icon">
+      <div class="header-text">
+        <h1>Media Manager</h1>
+        <p class="tagline">Import, browse, and back up camera footage.</p>
+      </div>
+    </div>
+    <span class="version">v0.5.5</span>
+
+    <section class="how-it-works" style="margin-top:2rem; background:#f6f8fa; border:1px solid #d0d7de; border-radius:8px; padding:1.25rem 1.5rem;">
+      <h2 style="margin-bottom:0.5rem;">How it works</h2>
+      <p style="font-size:0.9rem; line-height:1.6; color:#24292f;">
+        Media Manager is designed around a <strong>local-first</strong> workflow that keeps your camera free and your footage safe:
+      </p>
+      <ol style="list-style:decimal; padding-left:1.25rem; font-size:0.88rem; line-height:1.7; margin-top:0.5rem;">
+        <li><strong>Import to your Mac</strong> — native USB transfer is fast, so the camera is free to use again in seconds.</li>
+        <li><strong>Back up to Google Drive</strong> — upload runs in the background from your Mac; no need to keep the camera connected.</li>
+        <li><strong>Clean up</strong> — delete the local copy once the upload finishes.</li>
+      </ol>
+      <p style="font-size:0.82rem; color:#656d76; margin-top:0.6rem;">
+        Why not upload directly from the camera? Large video files can take a long time to transfer over the network, tying up your device. A cable connection can also drop mid-transfer. By importing locally first, you get a reliable copy right away and the camera back in your hands.
+      </p>
+      <p style="font-size:0.82rem; color:#656d76; margin-top:0.4rem;">
+        <strong style="color:#24292f;">Resilient imports.</strong> If the app is closed or crashes mid-import, it remembers exactly which files were completed and which weren't. On the next launch, interrupted files are clearly flagged so you can re-select and resume without guessing where you left off.
+      </p>
+    </section>
+
+    <section class="steps">
+      <h2>Install</h2>
+      <ol>
+        <li>Download the zip for your Mac: <a href="./downloads/Media Manager-0.5.5-arm64.zip">Apple Silicon (arm64)</a> &nbsp;|&nbsp; <a href="./downloads/Media Manager-0.5.5-x64.zip">Intel (x64)</a></li>
+        <li>Unzip and move <strong>Media Manager.app</strong> to your Applications folder.</li>
+        <li>Open Terminal and run:<br><code>xattr -cr /Applications/Media\ Manager.app</code><br><span style="color:#656d76; font-size:0.82rem;">This clears the quarantine flag since the app is not notarized.</span></li>
+        <li>Open <strong>Media Manager</strong> from Applications.</li>
+      </ol>
+    </section>
+
+    <hr>
+
+    <section class="devices">
+      <h2>Supported devices</h2>
+      <ul>
+<li><strong>DJI Osmo Nano</strong> – Import videos and photos from the camera SD card (<code>/Volumes/OsmoNano</code>)</li>
+<li><strong>Insta360 GO 3S</strong> – Import videos from the action camera (<code>/Volumes/GO 3S</code>)</li>
+</ul>
+
+    </section>
+
+    <hr>
+
+    <section class="changelog">
+      <h2>Changelog</h2>
+      <h2>[0.5.5] - 2026-04-15</h2>
+<h3>Added</h3>
+<ul>
+<li>Submissions dashboard now aggregates data from a second Google Drive folder for broader team coverage</li>
+</ul>
+<h2>[0.5.4] - 2026-03-24</h2>
+<h3>Added</h3>
+<ul>
+<li>Submission dashboard now recursively scans nested subfolders within each contributor folder</li>
+<li>Collapsible subfolder breakdown showing per-subfolder duration, clips, and size under each contributor</li>
+<li>Direct Google Drive links on contributor and subfolder rows to open folders in browser</li>
+</ul>
+<h3>Fixed</h3>
+<ul>
+<li>Refresh button now spins correctly instead of showing full-page loading spinner</li>
+</ul>
+<h2>[0.5.3] - 2026-03-06</h2>
+<h3>Fixed</h3>
+<ul>
+<li>Device view showing &quot;Imported&quot; instead of &quot;Uploaded&quot; for files that were both local and on Drive; &quot;Uploaded&quot; now takes priority as the more advanced state</li>
+</ul>
+<h2>[0.5.2] - 2026-03-06</h2>
+<h3>Changed</h3>
+<ul>
+<li>Sidebar submission summary is now a single clickable area with hover highlight instead of nested buttons</li>
+</ul>
+<h3>Fixed</h3>
+<ul>
+<li>Device view incorrectly showing &quot;New&quot; badge for files already uploaded to Google Drive when the local copy was deleted</li>
+</ul>
+<h2>[0.5.1] - 2026-03-04</h2><div class="screenshots"><img src="./images/v0.5.1-team-submissions.png" alt="v0.5.1 screenshot"></div>
+<h3>Added</h3>
+<ul>
+<li>Team Submissions dashboard: tracks total recording hours across all contributors by scraping video duration metadata from the shared Google Drive Submissions folder</li>
+<li>Dedicated submissions page with metric cards (total hours, clips, contributors, size) and a full contributor leaderboard with gold/silver/bronze ranking</li>
+<li>Compact submission summary in the sidebar footer, clickable to open the detail page</li>
+<li>&quot;Open in Drive&quot; button to jump directly to the shared Submissions folder</li>
+</ul>
+<h3>Changed</h3>
+<ul>
+<li>Library view now sorts files by date from most recent to oldest</li>
+<li>Google Drive OAuth now requests <code>drive.readonly</code> scope alongside <code>drive.file</code> for read access to shared folders (one-time re-auth required)</li>
+</ul>
+<h3>Fixed</h3>
+<ul>
+<li>Release page missing version headings for versions with screenshots (bash <code>$1</code> expansion in inline node script)</li>
+<li>Release page was stripping [Unreleased] changelog entries instead of publishing them under the current version</li>
+</ul>
+<h2>[0.5.0] - 2026-03-02</h2><div class="screenshots"><img src="./images/v0.5.0-pipeline-progress-after-disconnect.png" alt="v0.5.0 screenshot"></div>
+<h3>Added</h3>
+<ul>
+<li>Pipeline progress survives device disconnect: upload-to-Drive progress is now visible in the Library view after camera disconnection, with cancel support</li>
+<li>Auto-navigate to Library when a device disconnects while viewing it, so users are never stuck on a dead device view</li>
+<li>Auto-focus window on device connect: app comes to the front automatically when a camera is plugged in, with a dock bounce on macOS</li>
+<li>&quot;New&quot; badge on unimported device files: files not yet in the library are highlighted with an amber &quot;New&quot; badge and subtle row tint so users can quickly see what needs importing</li>
+<li><code>emptyVolumeTrashes()</code> utility to reclaim disk space on external volumes after file deletion (macOS moves deleted files to <code>.Trashes</code> instead of unlinking)</li>
+<li>CI cleanup job to delete old <code>build-mac</code> artifacts (keep latest 2) with 7-day retention</li>
+<li>App screenshots on release page, placed under the matching changelog version section</li>
+<li>CI skips macOS build for docs-only changes, reusing the latest cached artifact</li>
+</ul>
+<h3>Changed</h3>
+<ul>
+<li>Device detection now checks for <code>DCIM</code> root directory instead of the full media subfolder path, so empty/new devices are still recognized</li>
+</ul>
+<h3>Fixed</h3>
+<ul>
+<li>Docker e2e sandbox: add <code>.dockerignore</code> to prevent host <code>node_modules</code> from overwriting Linux dependencies, add missing <code>xauth</code> package and <code>device-insta360</code> manifest, fix <code>xvfb-run</code> argument parsing</li>
+</ul>
+<h2>[0.4.6] - 2026-02-13</h2><div class="screenshots"><img src="./images/v0.4.6-new-badges.png" alt="v0.4.6 screenshot"></div>
+<h3>Added</h3>
+<ul>
+<li>Streaming import+upload pipeline: single-click &quot;Import &amp; Upload&quot; button copies files from device and uploads to Google Drive concurrently</li>
+<li>Per-file pipeline progress panel showing multi-stage status (queued, importing, uploading, done)</li>
+<li>&quot;Select New&quot; button in device view to quickly select files not yet imported</li>
+<li>Crash-safe pipeline journal with automatic recovery on app restart</li>
+<li><code>AsyncChannel</code> producer-consumer primitive for concurrent worker coordination</li>
+<li><code>GDriveService.uploadSingleFile()</code> for per-file streaming uploads</li>
+<li><code>gdrive-is-ready</code> IPC handler for Drive readiness checks</li>
+</ul>
+<h3>Changed</h3>
+<ul>
+<li>Redesigned pipeline progress panel: two-line file rows with full-width segmented progress bar replacing inline badge pills</li>
+<li>Pipeline progress header now includes contextual icon (cloud-upload or hard-drive-download)</li>
+<li>Use kernel-level <code>fs.copyFile</code> (macOS <code>copyfile(3)</code>) for file imports instead of userland streams — significantly faster transfer speeds</li>
+<li>Progress reporting now polls destination file size every 250ms instead of per-chunk IPC, reducing renderer overhead from ~4,000 to ~160 messages per 16 GB file</li>
+<li>Reorder device action buttons to prioritize &quot;Import &amp; Upload&quot; over &quot;Copy to Computer&quot;</li>
+<li>Pipeline file status badges now shown in device file table (uploading, uploaded, done)</li>
+<li>Importing section shows safe-disconnect hint while imports are in progress</li>
+</ul>
+<h3>Fixed</h3>
+<ul>
+<li>Crash in DeviceView when <code>queuedFiles</code> field is missing from operation progress event</li>
+<li>E2E tests: corrected stale locators for sidebar storage, drive status, and action buttons</li>
+<li>Eliminated redundant <code>stat()</code> call on source file after copy completion</li>
+</ul>
+<h2>[0.4.5] - 2026-02-12</h2>
+<h3>Changed</h3>
+<ul>
+<li>Progress panel redesign: show byte-level progress with transfer speed and ETA for imports and uploads</li>
+<li>DeviceView and FileTable improvements</li>
+</ul>
+<h3>Removed</h3>
+<ul>
+<li>Remove &quot;Delete Selected&quot; button from Library view (redundant with &quot;Delete Local&quot;)</li>
+<li>Remove file verification state (<code>verified</code> status) from the entire stack: shared types, core library, IPC handlers, and UI</li>
+</ul>
+<h2>[0.4.4] - 2026-02-12</h2>
+<h3>Changed</h3>
+<ul>
+<li>Redesign sidebar with proper section hierarchy: Library and Devices now both have consistent uppercase section headers</li>
+<li>Rename sidebar nav item from &quot;Library&quot; to &quot;All Videos&quot; for clarity</li>
+<li>Remove camera icon from sidebar header</li>
+<li>Middle-truncate filenames in file tables to always show file extensions (.MP4, .JPEG, etc.)</li>
+</ul>
+<h2>[0.4.3] - 2026-02-12</h2>
+<h3>Changed</h3>
+<ul>
+<li>Add standard macOS transparent padding to app icon for proper dock sizing</li>
+<li>Rename default library folder from &quot;DJI Media Manager&quot; to &quot;Media Manager&quot;</li>
+<li>Rename public downloads repo from <code>dji-downloads</code> to <code>media-manager-releases</code></li>
+</ul>
+<h2>[0.4.2] - 2026-02-12</h2>
+<h3>Added</h3>
+<ul>
+<li>&quot;How it works&quot; section on the download page explaining the local-first import workflow</li>
+</ul>
+<h3>Changed</h3>
+<ul>
+<li>Update download page icon to use the cropped app icon</li>
+</ul>
+<h2>[0.4.1] - 2026-02-12</h2>
+<h3>Changed</h3>
+<ul>
+<li>Crop app icon to remove transparent background padding</li>
+</ul>
+<h2>[0.4.0] - 2026-02-12</h2>
+<h3>Added</h3>
+<ul>
+<li>User-configurable Google Drive upload folder: paste a Drive folder URL in the Library view instead of a hardcoded destination</li>
+<li>Google Drive account disconnect/reconnect: switch accounts without restarting the app</li>
+<li>Google Drive backup section on the release download page with setup instructions</li>
+</ul>
+<h3>Fixed</h3>
+<ul>
+<li>Fix Insta360 adapter crash on launch: add missing <code>device-insta360</code> to electron-vite bundle config</li>
+<li>Add <code>default</code> export condition to all workspace packages for CJS compatibility</li>
+</ul>
+<h2>[0.3.0] - 2026-02-12</h2>
+<h3>Added</h3>
+<ul>
+<li>In-place auto-update: download, extract, and replace the app without leaving the window</li>
+<li>Insta360 device support: import videos and photos from Insta360 camera SD cards</li>
+<li>App icon</li>
+</ul>
+<h3>Changed</h3>
+<ul>
+<li>Update dialog redesign with download progress and Install &amp; Restart flow</li>
+<li>DJI adapter: expanded device configuration and file parsing</li>
+</ul>
+<h2>[0.2.0] - 2026-02-12</h2>
+<h3>Added</h3>
+<ul>
+<li>In-app update checker: auto-detects new releases and shows changelog with download link</li>
+<li>Version display in sidebar footer; click to check for updates manually</li>
+<li>CI publishes <code>latest.json</code> alongside the release page for update detection</li>
+</ul>
+<h3>Fixed</h3>
+<ul>
+<li>Fix Google Drive upload failing in release builds with &quot;no redirect URI found&quot; (credentials.json was empty)</li>
+</ul>
+<h3>Changed</h3>
+<ul>
+<li>Simplify release download page; extract inline HTML into <code>docs/release/index.html</code> template</li>
+<li>Pre-commit guard requiring CHANGELOG.md updates when apps/ or packages/ change</li>
+</ul>
+<h2>[0.1.0] - 2026-02-11</h2>
+<h3>Added</h3>
+<ul>
+<li>Initial release of Media Manager desktop app</li>
+<li>DJI Osmo Nano device support: import videos and photos from camera SD card</li>
+<li>Library view for browsing imported media</li>
+<li>Video playback with proxy support (.LRF)</li>
+<li>Optional Google Drive upload (OAuth2)</li>
+</ul>
+
+    </section>
+
+    <hr>
+
+    <section class="cloud-backup">
+      <h2>Google Drive backup</h2>
+      <p style="font-size:0.9rem; line-height:1.6; margin-top:0.25rem;">
+        Media Manager can upload your imported footage to Google Drive for off-site backup.
+        You choose the destination folder — nothing is hardcoded.
+      </p>
+      <ol style="list-style:decimal; padding-left:1.25rem; font-size:0.88rem; line-height:1.7; margin-top:0.5rem;">
+        <li>Open your <a href="https://drive.google.com" style="color:#0969da; text-decoration:none; font-weight:500;">Google Drive</a> and create (or pick) a folder for your footage.</li>
+        <li>Copy the folder URL or ID from the browser address bar.</li>
+        <li>In Media Manager, paste it into the <strong>Google Drive folder</strong> field on the Library page.</li>
+        <li>Connect your Google account via OAuth2, then use <strong>Upload to Drive</strong> to back up selected files.</li>
+      </ol>
+      <p style="font-size:0.82rem; color:#656d76; margin-top:0.5rem;">
+        Requires OAuth2 credentials (<code>credentials.json</code>).
+        Uploads are resumable — interrupted transfers pick up where they left off.
+      </p>
+    </section>
+
+    <p class="footer">Google Drive upload is optional and requires OAuth2 credentials.</p>
+  </div>
+</body>
+</html>
